@@ -19,17 +19,14 @@ enum ProductID: String, CaseIterable {
 
 final class LivesManager {
     
-    // MARK: - Properties
     let initialLives = 10
     private let lastUpdateKey = "lastLivesUpdateDate"
     private let livesKey = "currentLives"
     
-    // MARK: - Init
     init() {
         checkForDailyReset()
     }
     
-    // MARK: - Daily Reset Logic
     private func checkForDailyReset() {
         let now = Date()
         let lastUpdate = UserDefaults.standard.object(forKey: lastUpdateKey) as? Date ?? .distantPast
@@ -39,7 +36,6 @@ final class LivesManager {
         }
     }
     
-    // MARK: - Lives Management
     var currentLives: Int {
         get {
             return UserDefaults.standard.integer(forKey: livesKey)

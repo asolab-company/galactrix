@@ -1,6 +1,5 @@
 import UIKit
 
-// MARK: - ADD SUBVIEWS:
 
 extension UIView {
     func addSubviews(_ views: UIView...) {
@@ -10,7 +9,6 @@ extension UIView {
     }
 }
 
-// MARK: - BLUR:
 
 extension UIView {
     func addBlurEffect(_ style: UIBlurEffect.Style = .dark) {

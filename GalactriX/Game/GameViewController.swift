@@ -5,7 +5,6 @@ import UIKit
 import AVFoundation
 
 class GameViewController: UIViewController {
-    // MARK: - PROPERTIES:
     
     private var gameBG = LottieAnimationView(name: "GameBG")
     private let pauseButton = UIButton()
@@ -15,9 +14,9 @@ class GameViewController: UIViewController {
     var gameScene: GameScene!
     var scoreValue: Int = 0
     var player: AVAudioPlayer?
+    var flightTheme = FlightTheme.selected
     var statusMusic: Bool = true
     
-    // MARK: - LIFECYCLE:
     
     override func loadView() {
         self.view = SKView()
@@ -44,7 +43,6 @@ class GameViewController: UIViewController {
         return true
     }
     
-    // MARK: - SETUPS:
     
     private func gameStart() {
         if let view = view as? SKView {
@@ -52,6 +50,7 @@ class GameViewController: UIViewController {
                 scene.scaleMode = .aspectFill
                 gameScene = scene as? GameScene
                 gameScene.gameDelegate = self
+                gameScene.flightTheme = flightTheme
                 view.presentScene(scene)
             }
             view.ignoresSiblingOrder = true
@@ -61,13 +60,11 @@ class GameViewController: UIViewController {
         }
     }
 
-    // MARK: - ADD SUBVIEWS:
     
     private func addSubviews() {
         view.addSubview(pauseButton)
     }
     
-    // MARK: - CONFIGURE CONSTRAINTS:
 
     private func configureConstraints() {
         pauseButton.translatesAutoresizingMaskIntoConstraints = false
@@ -77,14 +74,14 @@ class GameViewController: UIViewController {
         pauseButton.widthAnchor.constraint(equalToConstant: 75).isActive = true
     }
 
-    // MARK: - CONFIGURE UI:
     
     private func configureUI() {
         pauseButton.setImage(UIImage(resource: .pause), for: .normal)
+        pauseButton.accessibilityLabel = "Pause"
+        pauseButton.accessibilityIdentifier = "pause-game"
         pauseButton.addTarget(self, action: #selector(pauseButtonTapped), for: .touchUpInside)
     }
     
-    // MARK: - HELPERS
     
     @objc private func pauseButtonTapped() {
         VibrationManager.instance.vibrationStandart()
@@ -96,7 +93,6 @@ class GameViewController: UIViewController {
         present(pauseViewController, animated: true)
     }
     
-    // MARK: - SHOW VC:
     
     func showVC(_ viewController: UIViewController) {
         addChild(viewController)
@@ -109,7 +105,6 @@ class GameViewController: UIViewController {
         }
     }
     
-    // MARK: - HIDE PAUSE SCREEN:
     
     func hidePauseScreen(viewController: UIViewController) {
         viewController.willMove(toParent: nil)
@@ -123,7 +118,6 @@ class GameViewController: UIViewController {
         }
     }
     
-    // MARK: LOTTIE BACKGROUND:
     
     private func createLottieBackground() {
         view.addSubview(gameBG)
@@ -137,10 +131,10 @@ class GameViewController: UIViewController {
         gameBG.loopMode = .autoReverse
         gameBG.contentMode = .scaleAspectFill
         gameBG.layer.opacity = 0.1
+        gameBG.isUserInteractionEnabled = false
         view.addSubview(pauseButton)
     }
     
-    // SET MUSIC:
     private func setMusic() {
         if statusMusic {
             UserDefaults.standard.setValue("backgroundMusic", forKey: "music")
@@ -151,17 +145,16 @@ class GameViewController: UIViewController {
     }
 }
 
-// MARK: - EXTENSIONS:
 
 extension GameViewController: GameOverVCDelegate, FinishVCDelegate {
     
-    // RESTART GAME:
     func restartGame() {
         if let view = view as? SKView {
             if let scene = SKScene(fileNamed: "GameScene") {
                 scene.scaleMode = .aspectFill
                 gameScene = scene as? GameScene
                 gameScene.gameDelegate = self
+                gameScene.flightTheme = flightTheme
                 view.presentScene(scene)
             }
             view.ignoresSiblingOrder = true
@@ -171,7 +164,6 @@ extension GameViewController: GameOverVCDelegate, FinishVCDelegate {
         }
     }
     
-    // SHOW GAME OVER VIEW CONTROLLER:
     func showGameOverViewController(withScore distance: Int) {
         let gameOverViewController = GameOverViewController()
         gameOverViewController.delegate = self
@@ -191,14 +183,14 @@ extension GameViewController: GameOverVCDelegate, FinishVCDelegate {
 
 extension GameViewController: GameSceneDelegate {
     func gameDidEnd(withDistance distance: Int) {
+        UserDefaults.standard.set(distance, forKey: "lastFlightScore")
         player?.stop()
-        print("player stop 1")
         showGameOverViewController(withScore: distance)
     }
     
     func gameDidFinish(withDistance distance: Int) {
+        UserDefaults.standard.set(distance, forKey: "lastFlightScore")
         player?.stop()
-        print("player stop 2")
         showFinishViewController(withDistance: distance)
     }
 }

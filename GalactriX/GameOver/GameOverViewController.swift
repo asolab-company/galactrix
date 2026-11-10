@@ -9,7 +9,6 @@ protocol GameOverVCDelegate: AnyObject {
 }
 
 class GameOverViewController: UIViewController {
-    // MARK: - PROPERTIES:
     
     var recordLabel = UILabel()
     var recordScore: Int = 0
@@ -26,7 +25,6 @@ class GameOverViewController: UIViewController {
     private let livesManager = LivesManager()
     private var player = AVAudioPlayer()
     
-    // MARK: - LIFYCYCLE:
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +35,6 @@ class GameOverViewController: UIViewController {
         playFinishMusic()
     }
 
-    // MARK: - ADD SUBVIEWS:
     
     private func addSubviews() {
         view.addSubview(backgroundLottie)
@@ -50,7 +47,6 @@ class GameOverViewController: UIViewController {
         view.addSubview(menuButton)
     }
     
-    // MARK: - CONFIGURE CONSTRAINTS:
     
     private func configureConstraints() {
         
@@ -96,7 +92,6 @@ class GameOverViewController: UIViewController {
         menuButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
-    // MARK: - CONFIGURE UI:
     
     private func configureUI() {
         
@@ -130,22 +125,19 @@ class GameOverViewController: UIViewController {
     }
     
     private func calculateRecord(score: Int) -> String {
-        var record: Int = 0
         let savedRecord = UserDefaults.standard.integer(forKey: "record")
         if score > savedRecord {
-            record = score
-            UserDefaults.standard.set(record, forKey: "record")
+            UserDefaults.standard.set(score, forKey: "record")
             newRecord.isHidden = false
             newRecord.play()
             newRecord.loopMode = .playOnce
             newRecord.animationSpeed = 0.5
             vibrationOn.vibrationSucces()
         } else if score < savedRecord {
-            record = savedRecord
             vibrationOn.vibrationError()
         }
         
-        return String(record)
+        return String(max(score, savedRecord))
     }
     
     private func resetRecord(score: Int) -> String {
@@ -154,7 +146,6 @@ class GameOverViewController: UIViewController {
         return String(record)
     }
     
-    // MARK: - HELPERS:
 
     @objc private func restartButtonTapped1() {
         delegate?.restartGame()
@@ -162,7 +153,6 @@ class GameOverViewController: UIViewController {
         vibrationOn.vibrationStandart()
     }
     
-    // RESTART BUTTON TAPPED:
     @objc func restartButtonTapped() {
         if livesManager.isOutOfLives() {
             let paywall = PaywallViewController()
@@ -180,7 +170,6 @@ class GameOverViewController: UIViewController {
         vibrationOn.vibrationStandart()
     }
     
-    // HANDLE GAME OVER:
     private func handleGameOver() {
         livesManager.decrementLife()
         if livesManager.isOutOfLives() {
@@ -190,7 +179,6 @@ class GameOverViewController: UIViewController {
         }
     }
     
-    // SHOW OUT OF LIVES ALERT:
     private func showOutOfLivesAlert() {
         let alert = UIAlertController(title: NSLocalizedString("You've run out of lives", comment: ""), message: NSLocalizedString("Try it tomorrow or get extra lives.", comment: ""), preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: .default))
@@ -203,24 +191,17 @@ class GameOverViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    // UPDATE LIVES DISPLAY:
     private func updateLivesDisplay() {
         livesLabel.text = NSLocalizedString("Counts of races: ", comment: "") + String(livesManager.currentLives)
     }
     
-    // PLAY FINISH MUSIC:
     private func playFinishMusic() {
-        let url = Bundle.main.url(forResource: "gameOverMusic", withExtension: "mp3")
-        guard let url = url else { return }
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player.play()
-        } catch {
-            print(error.localizedDescription)
-        }
+        guard let url = Bundle.main.url(forResource: "gameOverMusic", withExtension: "mp3"),
+              let audioPlayer = try? AVAudioPlayer(contentsOf: url) else { return }
+        player = audioPlayer
+        audioPlayer.play()
     }
     
-    // MENU BUTTON TAPPED:
     @objc func menuButtonTapped() {
         VibrationManager.instance.vibrationStandart()
         player.stop()

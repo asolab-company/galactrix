@@ -9,7 +9,6 @@ protocol FinishVCDelegate: AnyObject {
 }
 
 final class FinishVC: UIViewController {
-    // MARK: - PROPERTIES:
     
     private let promtView = UIView()
     private let promtTitleLabel = UILabel()
@@ -32,7 +31,6 @@ final class FinishVC: UIViewController {
     private let vibrationOn = Vibration()
     private var player = AVAudioPlayer()
     
-    // MARK: - LIFYCYCLE:
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,13 +46,11 @@ final class FinishVC: UIViewController {
         BounceAnimationManager.instance.startBounceAnimation(obj: menuButton)
     }
 
-    // MARK: - ADD SUBVIEWS:
     
     private func addSubviews() {
         view.addSubviews(backgroundImageVIew, finishLottie, newRecord, recordLabel, scoreLabel, menuButton, resetRecordButton, promtView, promtTitleLabel, promtDescriptionLabel, promtViewBottom, promtTitleLabelBottom, promtImageView)
     }
     
-    // MARK: - CONFIGURE CONSTRAINTS:
     
     private func configureConstraints() {
         
@@ -128,7 +124,6 @@ final class FinishVC: UIViewController {
         promtImageView.heightAnchor.constraint(equalTo: promtImageView.widthAnchor, multiplier: 1).isActive = true
     }
     
-    // MARK: - CONFIGURE UI:
     
     private func configureUI() {
         
@@ -154,7 +149,7 @@ final class FinishVC: UIViewController {
         promtTitleLabel.textColor = .lightGray
         promtTitleLabel.font = .systemFont(ofSize: 16, weight: .bold)
 
-        promtDescriptionLabel.text = NSLocalizedString("Finish text", comment: "")
+        promtDescriptionLabel.text = NSLocalizedString("You reached 300 points and completed the flight.", comment: "")
         promtDescriptionLabel.textColor = .white
         promtDescriptionLabel.numberOfLines = 0
         promtDescriptionLabel.font = .systemFont(ofSize: 14, weight: .regular)
@@ -167,7 +162,7 @@ final class FinishVC: UIViewController {
         
         recordLabel.font = .systemFont(ofSize: 20, weight: .medium, width: .standard)
         recordLabel.textColor = .white
-        recordLabel.text = NSLocalizedString("Record: ", comment: "") + calculateRecord(score: 0)
+        recordLabel.text = NSLocalizedString("Record: ", comment: "") + calculateRecord(score: score)
         recordLabel.isHidden = true
         
         menuButton.setTitle(NSLocalizedString("Menu", comment: ""), for: .normal)
@@ -193,7 +188,7 @@ final class FinishVC: UIViewController {
         promtViewBottom.addBlurEffect(.dark)
         
         promtViewBottom.addSubviews(promtTitleLabelBottom, promtImageView)
-        promtTitleLabelBottom.text = NSLocalizedString("Congratulations! You open new car!", comment: "")
+        promtTitleLabelBottom.text = NSLocalizedString("Congratulations, pilot!", comment: "")
         promtTitleLabelBottom.numberOfLines = 0
         promtTitleLabelBottom.textColor = .lightGray
         promtTitleLabelBottom.font = .systemFont(ofSize: 16, weight: .bold)
@@ -203,31 +198,23 @@ final class FinishVC: UIViewController {
     }
     
     private func calculateRecord(score: Int) -> String {
-        var record: Int = 300
         let savedRecord = UserDefaults.standard.integer(forKey: "record")
-        if score < savedRecord {
-            record = score
-            UserDefaults.standard.set(record, forKey: "record")
+        if score > savedRecord {
+            UserDefaults.standard.set(score, forKey: "record")
             newRecord.isHidden = false
             newRecord.play()
             newRecord.loopMode = .playOnce
             newRecord.animationSpeed = 0.5
             vibrationOn.vibrationSucces()
-        } else if score > savedRecord {
-            record = savedRecord
-            vibrationOn.vibrationError()
         }
-        
-        return String(record)
+        return String(max(score, savedRecord))
     }
-    
-    private func resetRecord(score: Int) -> String {
-        let record = 300
-        UserDefaults.standard.set(record, forKey: "record")
-        return String(record)
+
+    private func resetRecord() -> String {
+        UserDefaults.standard.set(0, forKey: "record")
+        return "0"
     }
-    
-    // MARK: - HELPERS:
+
 
     @objc func menuButtonTapped() {
         vibrationOn.vibrationStandart()
@@ -239,22 +226,17 @@ final class FinishVC: UIViewController {
     }
     
     @objc private func resetRecordButtonTapped() {
-        recordLabel.text = "Record: " + resetRecord(score: 300)
+        recordLabel.text = "Record: " + resetRecord()
         vibrationOn.vibrationStandart()
     }
     
     private func playFinishMusic() {
-        let url = Bundle.main.url(forResource: "finishSound", withExtension: "mp3")
-        guard let url = url else { return }
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player.play()
-        } catch {
-            print(error.localizedDescription)
-        }
+        guard let url = Bundle.main.url(forResource: "finishSound", withExtension: "mp3"),
+              let audioPlayer = try? AVAudioPlayer(contentsOf: url) else { return }
+        player = audioPlayer
+        audioPlayer.play()
     }
     
-    // MARK: SET FINISH STATUS:
     
     private func setFinishStatus() {
         UserDefaults.standard.setValue(true, forKey: "finishStatus")

@@ -25,7 +25,6 @@ final class OnboardingVC: UIViewController {
         (NSLocalizedString("GalactriX", comment: ""), NSLocalizedString("Engage in thrilling arcade-style combat with intuitive controls, vibrant graphics, and explosive effects in the depths of space.", comment: ""), image: UIImage(resource: .onboardingThree))
     ]
 
-    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,24 +51,20 @@ final class OnboardingVC: UIViewController {
         player?.currentItem?.removeObserver(self, forKeyPath: "status")
     }
     
-    // MARK: - ADD SUBVIEWS:
     
     private func addSubviews() {
         view.addSubviews(collectionView, continueButton)
     }
     
-    // MARK: - CONFIGURE CONSTRAINTS:
     
     private func configureConstraints() {
         
-        // COLLECTION VIEW:
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
-        // CONTINUE BUTTON:
         continueButton.translatesAutoresizingMaskIntoConstraints = false
         continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
         continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
@@ -77,7 +72,6 @@ final class OnboardingVC: UIViewController {
         continueButton.heightAnchor.constraint(equalTo: continueButton.widthAnchor, multiplier: 0.15).isActive = true
     }
 
-    // MARK: - Setup
 
     private func setupVideoBackground() {
         guard let videoURL = Bundle.main.url(forResource: "startVideo", withExtension: "mp4") else { return }
@@ -108,7 +102,6 @@ final class OnboardingVC: UIViewController {
         }
     }
     
-    // CONFIGURE COLLECTION VIEW:
     private func configureCollectionView() {
         collectionView.backgroundColor = UIColor.clear
         collectionView.delegate = self
@@ -123,13 +116,11 @@ final class OnboardingVC: UIViewController {
         collectionView.isScrollEnabled = false
     }
     
-    // MARK: - SETUP ACTIONS:
     
     private func setupActions() {
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
     }
 
-    // MARK: - Actions
     
     @objc private func continueButtonTapped() {
         VibrationManager.instance.vibrationStandart()
@@ -145,20 +136,14 @@ final class OnboardingVC: UIViewController {
         }
     }
     
-    // PLAY MUSIC:
-       private func playMusic() {
-           let url = Bundle.main.url(forResource: "name", withExtension: "mp3")
-           guard let url = url else { return }
-           do {
-               playerMusic = try AVAudioPlayer(contentsOf: url)
-               playerMusic.play()
-           } catch {
-               print(error.localizedDescription)
-           }
-       }
+    private func playMusic() {
+        guard let url = Bundle.main.url(forResource: "name", withExtension: "mp3"),
+              let audioPlayer = try? AVAudioPlayer(contentsOf: url) else { return }
+        playerMusic = audioPlayer
+        audioPlayer.play()
+    }
 }
 
-// MARK: - UICollectionView
 
 extension OnboardingVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

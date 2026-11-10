@@ -1,15 +1,12 @@
 import UIKit
 
 final class BounceAnimationManager {
-    // MARK: - STATIC:
 
     static let instance = BounceAnimationManager()
 
-    // MARK: - PRIVATE INIT:
 
     private init() {}
 
-    // MARK: - PUBLIC METHODS:
 
     func startBounceAnimation(obj: UIView) {
         obj.layer.removeAllAnimations()

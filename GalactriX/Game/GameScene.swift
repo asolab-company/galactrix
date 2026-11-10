@@ -2,7 +2,6 @@ import AVFoundation
 import GameplayKit
 import SpriteKit
 
-// MARK: - CLASS:
 
 protocol GameSceneDelegate: AnyObject {
     func gameDidEnd(withDistance distance: Int)
@@ -10,7 +9,6 @@ protocol GameSceneDelegate: AnyObject {
 }
 
 final class GameScene: SKScene, SKPhysicsContactDelegate {
-    // MARK: - PRIVATE PROPERTIES:
 
     private let mainShipNodeSettings: UInt32 = 1
     private let asterotdNodeSettings: UInt32 = 1 << 1
@@ -29,8 +27,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let hitSoundAction = SKAction.playSoundFileNamed("newLevel", waitForCompletion: true)
     private let finishSoundAction = SKAction.playSoundFileNamed("finishSound", waitForCompletion: true)
     var scoreValue = 0
+    var flightTheme = FlightTheme.selected
     
-    // MARK: - LIFECYCLE:
     
     override func didMove(to view: SKView) {
         setBackground()
@@ -40,7 +38,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         setScoreLabelNode()
     }
     
-    // MARK: SET GRAVITY WORLD:
     
     private func setWorldGravity() {
         if scoreValue > 0 && scoreValue <= 20 {
@@ -79,7 +76,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // MARK: PLAY SOUNDS FOR NEW LEVELS:
     
     private func playLevelSounds() {
         if scoreValue == 0 {
@@ -123,11 +119,11 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // MARK: FINISH GAME:
     
     private func finishGame() {
         if scoreValue == 300 {
             finishTheGame()
+            showFinishViewController(withDistance: scoreValue)
             finishLabelNode.position = CGPoint(x: frame.size.width / scoreLabelNode.frame.size.width, y: 100)
             finishLabelNode = SKLabelNode(text: "YOU WIN!\n Game is finished!\n\nGalactriX\nMalyshew Andrew\n2024")
             addChild(finishLabelNode)
@@ -140,13 +136,14 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    //MARK: SETUP BACKGROUND:
 
     private func setBackground() {
         scene?.size = UIScreen.main.bounds.size
         
-        backgroundNode = SKSpriteNode(imageNamed: "spaceBackground")
-        backgroundNode.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        backgroundNode = SKSpriteNode(imageNamed: flightTheme.backdrop)
+        let textureSize = backgroundNode.size
+        let scale = max((size.width + 16) / textureSize.width, (size.height + 16) / textureSize.height)
+        backgroundNode.size = CGSize(width: textureSize.width * scale, height: textureSize.height * scale)
         addChild(backgroundNode)
         
         let effectStars = SKEmitterNode(fileNamed: "Stars.sks")
@@ -164,16 +161,15 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundNode.zPosition = 0
     }
 
-    // MARK: SET SPACE SHIP:
     
     private func setMainSpaceShipNode() {
         mainShipNode = SKSpriteNode(imageNamed: "spaceShip")
         mainShipNode.xScale = 0.08
         mainShipNode.yScale = 0.08
+        mainShipNode.physicsBody = SKPhysicsBody(texture: mainShipNode.texture!, size: mainShipNode.size)
         mainShipNode.physicsBody?.categoryBitMask = mainShipNodeSettings
         mainShipNode.physicsBody?.contactTestBitMask = asterotdNodeSettings
         mainShipNode.physicsBody?.collisionBitMask = asterotdNodeSettings
-        mainShipNode.physicsBody = SKPhysicsBody(texture: mainShipNode.texture!, size: mainShipNode.size)
         mainShipNode.physicsBody?.isDynamic = false
         
         mainShipLayerNode = SKNode()
@@ -191,7 +187,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         mainShipLayerNode.addChild(effectFire)
     }
     
-    //MARK: SET ASTEROYD NODE LAYER:
 
     private func setAsteroydNodeLayer() {
         asteroydNode = SKNode()
@@ -212,7 +207,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         asteroydNode.run(asteroydRun)
     }
     
-    // MARK: SET SCORE LABEL NODE:
 
     private func setScoreLabelNode() {
         scoreLabelNode = SKLabelNode(text: "Score: \(scoreValue)")
@@ -221,7 +215,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabelNode.zPosition = 3
     }
     
-    // MARK: SET LEVEL LABEL NODE:
     
     private func setLevelLabelNode() {
         levelLabelNode = SKLabelNode(text: "Level: 1")
@@ -230,7 +223,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         levelLabelNode.zPosition = 4
     }
     
-    // MARK: TOUCH BEGAN:
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !statusPaused {
@@ -249,7 +241,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // MARK: - PAUSE GAME:
 
     func pauseTheGame() {
         statusPaused = true
@@ -258,7 +249,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         starNode.isPaused = true
     }
     
-    // MARK: - UNPAUSE GAME:
     func unpauseTheGame() {
         statusPaused = false
         asteroydNode.isPaused = false
@@ -266,7 +256,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         starNode.isPaused = false
     }
     
-    // MARK: - FINISH GAME:
     func finishTheGame() {
         statusPaused = true
         asteroydNode.isPaused = true
@@ -274,7 +263,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         starNode.isPaused = true
     }
     
-    // MARK: - RESET GAME:
     
     func resetTheGame() {
         scoreValue = 0
@@ -284,20 +272,17 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.speed = 1
     }
     
-    // MARK: - CALC DISTANCE
     
     func calcDistance(a: CGPoint, b: CGPoint) -> CGFloat {
         return sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y))
     }
     
-    // MARK: - DISTANCE TIME:
     
     func distanceTime(valueDistance: CGFloat, valueSpeed: CGFloat) -> TimeInterval {
         let valueTime = valueDistance / valueSpeed
         return TimeInterval(valueTime)
     }
     
-    // MARK: - CREATE ASTEROYD:
     
     func createAsteroid() -> SKSpriteNode {
         let mainAsteroyd = SKSpriteNode(imageNamed: "asteroid")
@@ -315,7 +300,6 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         mainAsteroyd.physicsBody?.angularVelocity = CGFloat(drand48() * 2 - 1) * 3
         mainAsteroyd.physicsBody?.velocity.dx = CGFloat(drand48() * 2 - 1) * asteroidSpeed
         
-        // SET VALUE FOR TRAECTORY ASTEROYD:
         
         physicsWorld.contactDelegate = self
         let randomValues = Double.random(in: -0.5...0.5)
@@ -324,12 +308,11 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         return mainAsteroyd
     }
     
-    // MARK: - DID SIMULATE PHYSICS:
     
     override func didSimulatePhysics() {
         asteroydNode.enumerateChildNodes(withName: "asteroid") { asteroyd, _ in
             let hightScreenView = UIScreen.main.bounds.height
-            if asteroyd.position.y < -hightScreenView {
+            if self.scoreValue < 300, asteroyd.position.y < -hightScreenView {
                 asteroyd.removeFromParent()
                 self.scoreValue = self.scoreValue + 1
                 self.scoreLabelNode.text = "Score: \(self.scoreValue)"
@@ -340,33 +323,24 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // MARK: - DID BEGIN:
     
     func didBegin(_ contact: SKPhysicsContact) {
-        VibrationManager.instance.vibrationError()
-        UserDefaults.standard.setValue("backgroundMusic", forKey: "music")
-        if contact.bodyA.categoryBitMask == mainShipNodeSettings && contact.bodyB.categoryBitMask == asterotdNodeSettings || contact.bodyB.categoryBitMask == mainShipNodeSettings && contact.bodyA.categoryBitMask == asterotdNodeSettings {
-            showGameOverViewController(withScore: scoreValue)
-            scoreValue = 0
-            scoreLabelNode.text = "Score: \(scoreValue)"
-        }
-        let hitSoundAction = SKAction.playSoundFileNamed("hitSound", waitForCompletion: true)
-        run(hitSoundAction)
-        showGameOverViewController(withScore: scoreValue )
+        let categories = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        guard !statusPaused, categories == (mainShipNodeSettings | asterotdNodeSettings) else { return }
         pauseTheGame()
+        VibrationManager.instance.vibrationError()
+        run(SKAction.playSoundFileNamed("hitSound", waitForCompletion: true))
+        showGameOverViewController(withScore: scoreValue)
     }
 }
 
-// MARK: - EXTENSION:
 
 extension GameScene {
     func showGameOverViewController(withScore score: Int) {
-        print("Game over")
         gameDelegate?.gameDidEnd(withDistance: score)
     }
     
     func showFinishViewController(withDistance distance: Int) {
-        print("Finish game")
         gameDelegate?.gameDidFinish(withDistance: 300)
     }
 }

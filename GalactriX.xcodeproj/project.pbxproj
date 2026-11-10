@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA2233445566778899001111 /* PinGameStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2233445566778899001112 /* PinGameStyle.swift */; };
+		AA2233445566778899001121 /* PrivacyWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2233445566778899001122 /* PrivacyWebViewController.swift */; };
+		AA2233445566778899001131 /* StartupRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2233445566778899001132 /* StartupRoute.swift */; };
+		AA2233445566778899001141 /* StartupWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2233445566778899001142 /* StartupWebViewController.swift */; };
 		FB0B8BFB2E26FE47007E6FE1 /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0B8BF92E26FE47007E6FE1 /* OnboardingVC.swift */; };
 		FB0B8BFC2E26FE47007E6FE1 /* OnboardingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0B8BF82E26FE47007E6FE1 /* OnboardingCell.swift */; };
 		FB0B8C032E26FE62007E6FE1 /* FontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0B8C012E26FE62007E6FE1 /* FontManager.swift */; };
@@ -38,6 +42,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AA2233445566778899001112 /* PinGameStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinGameStyle.swift; sourceTree = "<group>"; };
+		AA2233445566778899001122 /* PrivacyWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyWebViewController.swift; sourceTree = "<group>"; };
+		AA2233445566778899001132 /* StartupRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupRoute.swift; sourceTree = "<group>"; };
+		AA2233445566778899001142 /* StartupWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupWebViewController.swift; sourceTree = "<group>"; };
 		FB0B8BF82E26FE47007E6FE1 /* OnboardingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCell.swift; sourceTree = "<group>"; };
 		FB0B8BF92E26FE47007E6FE1 /* OnboardingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		FB0B8BFF2E26FE62007E6FE1 /* VibrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrationManager.swift; sourceTree = "<group>"; };
@@ -123,6 +131,8 @@
 			isa = PBXGroup;
 			children = (
 				FB703A832BC16BF4004BA452 /* AppDelegate.swift */,
+				AA2233445566778899001142 /* StartupWebViewController.swift */,
+				AA2233445566778899001132 /* StartupRoute.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -131,6 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				FBCB15D62BC20A5A00EC190E /* MenuViewController.swift */,
+				AA2233445566778899001122 /* PrivacyWebViewController.swift */,
+				AA2233445566778899001112 /* PinGameStyle.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -321,10 +333,14 @@
 				FB0B8C052E26FE62007E6FE1 /* BounceAnimationManager.swift in Sources */,
 				FB0B8C072E26FE62007E6FE1 /* Extensions.swift in Sources */,
 				FBCB15D72BC20A5A00EC190E /* MenuViewController.swift in Sources */,
+				AA2233445566778899001121 /* PrivacyWebViewController.swift in Sources */,
+				AA2233445566778899001111 /* PinGameStyle.swift in Sources */,
 				FB0B8BFB2E26FE47007E6FE1 /* OnboardingVC.swift in Sources */,
 				FB0B8BFC2E26FE47007E6FE1 /* OnboardingCell.swift in Sources */,
 				FB703A8C2BC16BF4004BA452 /* GameViewController.swift in Sources */,
 				FB703A842BC16BF4004BA452 /* AppDelegate.swift in Sources */,
+				AA2233445566778899001141 /* StartupWebViewController.swift in Sources */,
+				AA2233445566778899001131 /* StartupRoute.swift in Sources */,
 				FBCB15DD2BC2A63900EC190E /* GameOverViewController.swift in Sources */,
 				FB228D7E2E299CB100901A6A /* PaywallViewController.swift in Sources */,
 			);
@@ -474,17 +490,18 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = GalactriX;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = malyshewandrew.SpaceWalk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -509,17 +526,18 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = GalactriX;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = malyshewandrew.SpaceWalk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
